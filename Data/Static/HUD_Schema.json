@@ -1,0 +1,2556 @@
+{
+  "Client": {
+    "PersonalID": {
+      "DataType": "string",
+      "IsNullable": false,
+      "ValidationRules": {
+        "MaxLength": 32,
+        "Required": true,
+        "Unique": true
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "DOB": {
+      "DataType": "datetime",
+      "IsNullable": true,
+      "ValidationRules": {
+        "DateRange": "Must be reasonable birth date (not future, not before 1900)",
+        "LogicalCheck": "Must result in reasonable age (0-150 years)"
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "DOBDataQuality": {
+      "DataType": "int",
+      "IsNullable": false,
+      "ValidValues": [1, 2, 8, 9, 99],
+      "ValueDescriptions": {
+        "1": {
+          "Description": "Full DOB reported",
+          "Category": "Complete",
+          "QualityScore": 5,
+          "ReportingValue": "Complete"
+        },
+        "2": {
+          "Description": "Approximate or partial DOB reported", 
+          "Category": "Partial",
+          "QualityScore": 3,
+          "ReportingValue": "Partial"
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown",
+          "QualityScore": 1,
+          "ReportingValue": "Don't Know"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown",
+          "QualityScore": 1,
+          "ReportingValue": "Refused"
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Missing",
+          "QualityScore": 0,
+          "ReportingValue": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "Required": true,
+        "ConditionalValidation": "If DOB is provided, this should be 1 or 2"
+      }
+    },
+    "SSN": {
+      "DataType": "string",
+      "IsNullable": true,
+      "ValidationRules": {
+        "Pattern": "^\\d{9}$|^\\d{3}-\\d{2}-\\d{4}$",
+        "InvalidSSNs": ["000000000", "123456789", "999999999"]
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "SSNDataQuality": {
+      "DataType": "int",
+      "IsNullable": false,
+      "ValidValues": [1, 2, 8, 9, 99],
+      "ValueDescriptions": {
+        "1": {
+          "Description": "Full SSN reported",
+          "Category": "Complete", 
+          "QualityScore": 5,
+          "ReportingValue": "Complete"
+        },
+        "2": {
+          "Description": "Approximate or partial SSN reported",
+          "Category": "Partial",
+          "QualityScore": 3,
+          "ReportingValue": "Partial"
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown",
+          "QualityScore": 1,
+          "ReportingValue": "Don't Know"
+        },
+        "9": {
+          "Description": "Client prefers not to answer", 
+          "Category": "Unknown",
+          "QualityScore": 1,
+          "ReportingValue": "Refused"
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Missing",
+          "QualityScore": 0,
+          "ReportingValue": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "Required": true,
+        "ConditionalValidation": "If SSN is provided, this should be 1 or 2"
+      }
+    },
+    "NameDataQuality": {
+      "DataType": "int",
+      "IsNullable": false,
+      "ValidValues": [1, 2, 8, 9, 99],
+      "ValueDescriptions": {
+        "1": {
+          "Description": "Full name reported",
+          "Category": "Complete",
+          "QualityScore": 5,
+          "ReportingValue": "Complete"
+        },
+        "2": {
+          "Description": "Partial, nickname, or known alias reported",
+          "Category": "Partial",
+          "QualityScore": 3,
+          "ReportingValue": "Partial"
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown", 
+          "QualityScore": 1,
+          "ReportingValue": "Don't Know"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown",
+          "QualityScore": 1,
+          "ReportingValue": "Refused"
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Missing",
+          "QualityScore": 0,
+          "ReportingValue": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "Required": true
+      }
+    },
+    "VeteranStatus": {
+      "DataType": "int",
+      "IsNullable": false,
+      "ValidValues": [0, 1, 8, 9, 99],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Non-Veteran",
+          "ReportingValue": "Non-Veteran"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Veteran",
+          "ReportingValue": "Veteran",
+          "TriggerAdditionalData": "VeteranDetail"
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown",
+          "ReportingValue": "Don't Know"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown", 
+          "ReportingValue": "Refused"
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Unknown",
+          "ReportingValue": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "Required": true
+      }
+    }
+  },
+  "Name": {
+    "FirstName": {
+      "DataType": "string",
+      "IsNullable": true,
+      "ValidationRules": {
+        "MaxLength": 50
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "MiddleName": {
+      "DataType": "string", 
+      "IsNullable": true,
+      "ValidationRules": {
+        "MaxLength": 50
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "LastName": {
+      "DataType": "string",
+      "IsNullable": true,
+      "ValidationRules": {
+        "MaxLength": 50
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "NameSuffix": {
+      "DataType": "string",
+      "IsNullable": true,
+      "ValidationRules": {
+        "MaxLength": 50
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    }
+  },
+  "Race": {
+    "AmIndAKNative": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Not Selected"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Selected",
+          "RaceCategory": "American Indian, Alaska Native, or Indigenous"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "Asian": {
+      "DataType": "int",
+      "IsNullable": true, 
+      "ValidValues": [0, 1],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Not Selected"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Selected",
+          "RaceCategory": "Asian or Asian American"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "BlackAfAmerican": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No", 
+          "Category": "Not Selected"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Selected",
+          "RaceCategory": "Black, African American, or African"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "NativeHIPacific": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Not Selected"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Selected", 
+          "RaceCategory": "Native Hawaiian or Pacific Islander"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "White": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Not Selected"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Selected",
+          "RaceCategory": "White"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "HispanicLatinaeo": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Not Hispanic/Latino/Spanish Origin"
+        },
+        "1": {
+          "Description": "Yes", 
+          "Category": "Hispanic/Latino/Spanish Origin",
+          "EthnicityCategory": "Hispanic or Latino"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "MidEastNAfrican": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Not Selected"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Selected",
+          "RaceCategory": "Middle Eastern or North African"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "RaceNone": {
+      "DataType": "int", 
+      "IsNullable": true,
+      "ValidValues": [8, 9, 99],
+      "ValueDescriptions": {
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown"
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "ConditionalValidation": "Should only be populated if no race categories are selected"
+      }
+    }
+  },
+  "Gender": {
+    "Woman": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Not Selected"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Selected",
+          "GenderCategory": "Woman"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "Man": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Not Selected"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Selected", 
+          "GenderCategory": "Man"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "NonBinary": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Not Selected"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Selected",
+          "GenderCategory": "Non-Binary"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "CulturallySpecific": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Not Selected"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Selected",
+          "GenderCategory": "Culturally Specific Identity"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "Transgender": {
+      "DataType": "int", 
+      "IsNullable": true,
+      "ValidValues": [0, 1],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Not Selected"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Selected",
+          "GenderCategory": "Transgender"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "Questioning": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Not Selected"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Selected",
+          "GenderCategory": "Questioning"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "DifferentIdentity": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Not Selected"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Selected", 
+          "GenderCategory": "A gender not listed here",
+          "RequiresTextSpecification": true
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "DifferentIdentityText": {
+      "DataType": "string",
+      "IsNullable": true,
+      "ValidationRules": {
+        "MaxLength": 100,
+        "ConditionalRequired": "Required if DifferentIdentity = 1"
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "GenderNone": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [8, 9, 99],
+      "ValueDescriptions": {
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown"
+        },
+        "99": {
+          "Description": "Data not collected", 
+          "Category": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "ConditionalValidation": "Should only be populated if no gender categories are selected"
+      }
+    }
+  },
+  "VeteranDetail": {
+    "YearEnteredService": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidationRules": {
+        "Range": "1930 to current year",
+        "LogicalCheck": "Must be before YearSeparated if both provided"
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "YearSeparated": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidationRules": {
+        "Range": "1930 to current year + 1",
+        "LogicalCheck": "Must be after YearEnteredService if both provided"
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "WorldWarII": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1, 8, 9, 99],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Did not serve",
+          "ConflictPeriod": "1941-1945"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Served",
+          "ConflictPeriod": "1941-1945"
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown"
+        },
+        "9": {
+          "Description": "Client prefers not to answer", 
+          "Category": "Unknown"
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "KoreanWar": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1, 8, 9, 99],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Did not serve",
+          "ConflictPeriod": "1950-1953"
+        },
+        "1": {
+          "Description": "Yes", 
+          "Category": "Served",
+          "ConflictPeriod": "1950-1953"
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown"
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "VietnamWar": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1, 8, 9, 99],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Did not serve",
+          "ConflictPeriod": "1964-1975"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Served", 
+          "ConflictPeriod": "1964-1975"
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown"
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "DesertStorm": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1, 8, 9, 99],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Did not serve",
+          "ConflictPeriod": "1990-1991"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Served",
+          "ConflictPeriod": "1990-1991"
+        },
+        "8": {
+          "Description": "Client doesn't know", 
+          "Category": "Unknown"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown"
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "AfghanistanOEF": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1, 8, 9, 99],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Did not serve",
+          "ConflictPeriod": "2001-2014"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Served",
+          "ConflictPeriod": "2001-2014"
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown" 
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "IraqOIF": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1, 8, 9, 99],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Did not serve",
+          "ConflictPeriod": "2003-2011"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Served",
+          "ConflictPeriod": "2003-2011"
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown"
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "IraqOND": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1, 8, 9, 99], 
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Did not serve",
+          "ConflictPeriod": "2010-2011"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Served",
+          "ConflictPeriod": "2010-2011"
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown"
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "OtherTheater": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1, 8, 9, 99],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Did not serve"
+        },
+        "1": {
+          "Description": "Yes", 
+          "Category": "Served",
+          "ConflictPeriod": "Other military operations"
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown"
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "MilitaryBranch": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [1, 2, 3, 4, 6, 8, 9, 99],
+      "ValueDescriptions": {
+        "1": {
+          "Description": "Army",
+          "Category": "Military Branch",
+          "FullName": "United States Army"
+        },
+        "2": {
+          "Description": "Air Force",
+          "Category": "Military Branch",
+          "FullName": "United States Air Force"
+        },
+        "3": {
+          "Description": "Navy", 
+          "Category": "Military Branch",
+          "FullName": "United States Navy"
+        },
+        "4": {
+          "Description": "Marines",
+          "Category": "Military Branch",
+          "FullName": "United States Marine Corps"
+        },
+        "6": {
+          "Description": "Coast Guard",
+          "Category": "Military Branch",
+          "FullName": "United States Coast Guard"
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown"
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "DischargeStatus": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [1, 2, 3, 4, 5, 6, 7, 8, 9, 99],
+      "ValueDescriptions": {
+        "1": {
+          "Description": "Honorable",
+          "Category": "Positive Discharge",
+          "BenefitsEligible": true
+        },
+        "2": {
+          "Description": "General under honorable conditions",
+          "Category": "Positive Discharge", 
+          "BenefitsEligible": true
+        },
+        "3": {
+          "Description": "Under other than honorable conditions",
+          "Category": "Negative Discharge",
+          "BenefitsEligible": false
+        },
+        "4": {
+          "Description": "Bad conduct discharge",
+          "Category": "Negative Discharge",
+          "BenefitsEligible": false
+        },
+        "5": {
+          "Description": "Dishonorable discharge",
+          "Category": "Negative Discharge",
+          "BenefitsEligible": false
+        },
+        "6": {
+          "Description": "Under review/pending characterization",
+          "Category": "Pending",
+          "BenefitsEligible": null
+        },
+        "7": {
+          "Description": "Other",
+          "Category": "Other",
+          "BenefitsEligible": null
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown"
+        },
+        "99": {
+          "Description": "Data not collected", 
+          "Category": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    }
+  },
+  "Destinations": {
+    "101": {
+      "Code": 101,
+      "DataType": "int",
+      "Description": "Emergency shelter, including hotel or motel paid for with emergency shelter voucher, or RHY-funded Host Home shelter",
+      "ShortDescription": "Emergency Shelter",
+      "Category": "Temporary Housing",
+      "HUDCategory": "Literally Homeless",
+      "CategoryCode": 1,
+      "IsPermanent": false,
+      "IsPositiveOutcome": false,
+      "IsHomeless": true,
+      "ReportingGroup": "Temporary",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "116": {
+      "Code": 116,
+      "DataType": "int",
+      "Description": "Place not meant for habitation (e.g., a vehicle, an abandoned building, bus/train/subway station/airport or anywhere outside)",
+      "ShortDescription": "Unsheltered",
+      "Category": "Unsheltered",
+      "HUDCategory": "Literally Homeless",
+      "CategoryCode": 1,
+      "IsPermanent": false,
+      "IsPositiveOutcome": false,
+      "IsHomeless": true,
+      "ReportingGroup": "Unsheltered",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "118": {
+      "Code": 118,
+      "DataType": "int",
+      "Description": "Safe Haven",
+      "ShortDescription": "Safe Haven",
+      "Category": "Temporary Housing",
+      "HUDCategory": "Literally Homeless", 
+      "CategoryCode": 1,
+      "IsPermanent": false,
+      "IsPositiveOutcome": false,
+      "IsHomeless": true,
+      "ReportingGroup": "Temporary",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "204": {
+      "Code": 204,
+      "DataType": "int",
+      "Description": "Psychiatric hospital or other psychiatric facility",
+      "ShortDescription": "Psychiatric Facility",
+      "Category": "Institutional",
+      "HUDCategory": "Institutional",
+      "CategoryCode": 3,
+      "IsPermanent": false,
+      "IsPositiveOutcome": false,
+      "IsHomeless": false,
+      "ReportingGroup": "Institutional",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "205": {
+      "Code": 205,
+      "DataType": "int",
+      "Description": "Substance abuse treatment facility or detox center",
+      "ShortDescription": "Treatment Facility",
+      "Category": "Institutional",
+      "HUDCategory": "Institutional",
+      "CategoryCode": 3,
+      "IsPermanent": false,
+      "IsPositiveOutcome": false,
+      "IsHomeless": false,
+      "ReportingGroup": "Institutional",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "206": {
+      "Code": 206,
+      "DataType": "int",
+      "Description": "Hospital or other residential non-psychiatric medical facility",
+      "ShortDescription": "Medical Facility",
+      "Category": "Institutional",
+      "HUDCategory": "Institutional",
+      "CategoryCode": 3,
+      "IsPermanent": false,
+      "IsPositiveOutcome": false,
+      "IsHomeless": false,
+      "ReportingGroup": "Institutional", 
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "207": {
+      "Code": 207,
+      "DataType": "int",
+      "Description": "Jail, prison or juvenile detention facility",
+      "ShortDescription": "Correctional Facility",
+      "Category": "Institutional",
+      "HUDCategory": "Institutional",
+      "CategoryCode": 3,
+      "IsPermanent": false,
+      "IsPositiveOutcome": false,
+      "IsHomeless": false,
+      "ReportingGroup": "Institutional",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "215": {
+      "Code": 215,
+      "DataType": "int",
+      "Description": "Foster care home or foster care group home",
+      "ShortDescription": "Foster Care",
+      "Category": "Institutional",
+      "HUDCategory": "Institutional",
+      "CategoryCode": 3,
+      "IsPermanent": false,
+      "IsPositiveOutcome": false,
+      "IsHomeless": false,
+      "ReportingGroup": "Institutional",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "225": {
+      "Code": 225,
+      "DataType": "int",
+      "Description": "Long-term care facility or nursing home",
+      "ShortDescription": "Nursing Home",
+      "Category": "Institutional",
+      "HUDCategory": "Institutional", 
+      "CategoryCode": 3,
+      "IsPermanent": false,
+      "IsPositiveOutcome": false,
+      "IsHomeless": false,
+      "ReportingGroup": "Institutional",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "302": {
+      "Code": 302,
+      "DataType": "int",
+      "Description": "Transitional housing for homeless persons (including homeless youth)",
+      "ShortDescription": "Transitional Housing",
+      "Category": "Temporary Housing",
+      "HUDCategory": "Literally Homeless",
+      "CategoryCode": 1,
+      "IsPermanent": false,
+      "IsPositiveOutcome": false,
+      "IsHomeless": true,
+      "ReportingGroup": "Temporary",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "312": {
+      "Code": 312,
+      "DataType": "int",
+      "Description": "Staying or living with family, temporary tenure (e.g., room, apartment or house of family member)",
+      "ShortDescription": "Staying with Family (Temporary)",
+      "Category": "Temporary Housing",
+      "HUDCategory": "Imminent Risk",
+      "CategoryCode": 2,
+      "IsPermanent": false,
+      "IsPositiveOutcome": false,
+      "IsHomeless": false,
+      "ReportingGroup": "Doubled Up",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "313": {
+      "Code": 313,
+      "DataType": "int",
+      "Description": "Staying or living with friends, temporary tenure (e.g., room, apartment or house of friend)",
+      "ShortDescription": "Staying with Friends (Temporary)", 
+      "Category": "Temporary Housing",
+      "HUDCategory": "Imminent Risk",
+      "CategoryCode": 2,
+      "IsPermanent": false,
+      "IsPositiveOutcome": false,
+      "IsHomeless": false,
+      "ReportingGroup": "Doubled Up",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "314": {
+      "Code": 314,
+      "DataType": "int",
+      "Description": "Hotel or motel paid for without emergency shelter voucher",
+      "ShortDescription": "Hotel/Motel (Private Pay)",
+      "Category": "Temporary Housing",
+      "HUDCategory": "Imminent Risk",
+      "CategoryCode": 2,
+      "IsPermanent": false,
+      "IsPositiveOutcome": false,
+      "IsHomeless": false,
+      "ReportingGroup": "Temporary",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "327": {
+      "Code": 327,
+      "DataType": "int",
+      "Description": "Moved from one HOPWA funded project to HOPWA TH",
+      "ShortDescription": "HOPWA TH Transfer",
+      "Category": "Temporary Housing",
+      "HUDCategory": "Literally Homeless",
+      "CategoryCode": 1,
+      "IsPermanent": false,
+      "IsPositiveOutcome": false,
+      "IsHomeless": true,
+      "ReportingGroup": "Temporary",
+      "ValidForEntry": false,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "329": {
+      "Code": 329,
+      "DataType": "int",
+      "Description": "Residential project or halfway house with no homeless criteria",
+      "ShortDescription": "Halfway House",
+      "Category": "Temporary Housing", 
+      "HUDCategory": "Other",
+      "CategoryCode": 0,
+      "IsPermanent": false,
+      "IsPositiveOutcome": false,
+      "IsHomeless": false,
+      "ReportingGroup": "Temporary",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "332": {
+      "Code": 332,
+      "DataType": "int",
+      "Description": "Host Home (non-crisis)",
+      "ShortDescription": "Host Home",
+      "Category": "Temporary Housing",
+      "HUDCategory": "Other",
+      "CategoryCode": 0,
+      "IsPermanent": false,
+      "IsPositiveOutcome": false,
+      "IsHomeless": false,
+      "ReportingGroup": "Temporary",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "335": {
+      "Code": 335,
+      "DataType": "int",
+      "Description": "Staying or living with family, permanent tenure",
+      "ShortDescription": "Staying with Family (Permanent)",
+      "Category": "Permanent Housing",
+      "HUDCategory": "Housed",
+      "CategoryCode": 0,
+      "IsPermanent": true,
+      "IsPositiveOutcome": true,
+      "IsHomeless": false,
+      "ReportingGroup": "Permanent",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "336": {
+      "Code": 336,
+      "DataType": "int",
+      "Description": "Staying or living with friends, permanent tenure",
+      "ShortDescription": "Staying with Friends (Permanent)",
+      "Category": "Permanent Housing", 
+      "HUDCategory": "Housed",
+      "CategoryCode": 0,
+      "IsPermanent": true,
+      "IsPositiveOutcome": true,
+      "IsHomeless": false,
+      "ReportingGroup": "Permanent",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "410": {
+      "Code": 410,
+      "DataType": "int",
+      "Description": "Rental by client, no ongoing housing subsidy",
+      "ShortDescription": "Market Rate Rental",
+      "Category": "Permanent Housing",
+      "HUDCategory": "Housed",
+      "CategoryCode": 0,
+      "IsPermanent": true,
+      "IsPositiveOutcome": true,
+      "IsHomeless": false,
+      "ReportingGroup": "Permanent",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "411": {
+      "Code": 411,
+      "DataType": "int",
+      "Description": "Owned by client, no ongoing housing subsidy",
+      "ShortDescription": "Homeownership",
+      "Category": "Permanent Housing",
+      "HUDCategory": "Housed",
+      "CategoryCode": 0,
+      "IsPermanent": true,
+      "IsPositiveOutcome": true,
+      "IsHomeless": false,
+      "ReportingGroup": "Permanent",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "421": {
+      "Code": 421,
+      "DataType": "int",
+      "Description": "Rental by client, with VASH housing subsidy",
+      "ShortDescription": "VASH Subsidized Rental",
+      "Category": "Permanent Housing",
+      "HUDCategory": "Housed", 
+      "CategoryCode": 0,
+      "IsPermanent": true,
+      "IsPositiveOutcome": true,
+      "IsHomeless": false,
+      "ReportingGroup": "Permanent",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "TargetPopulation": "Veterans",
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "422": {
+      "Code": 422,
+      "DataType": "int",
+      "Description": "Rental by client, with other ongoing housing subsidy",
+      "ShortDescription": "Other Subsidized Rental",
+      "Category": "Permanent Housing",
+      "HUDCategory": "Housed",
+      "CategoryCode": 0,
+      "IsPermanent": true,
+      "IsPositiveOutcome": true,
+      "IsHomeless": false,
+      "ReportingGroup": "Permanent",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "423": {
+      "Code": 423,
+      "DataType": "int",
+      "Description": "Rental by client, with RRH or equivalent subsidy",
+      "ShortDescription": "RRH Subsidized Rental",
+      "Category": "Permanent Housing",
+      "HUDCategory": "Housed",
+      "CategoryCode": 0,
+      "IsPermanent": true,
+      "IsPositiveOutcome": true,
+      "IsHomeless": false,
+      "ReportingGroup": "Permanent",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "426": {
+      "Code": 426,
+      "DataType": "int",
+      "Description": "Moved from one HOPWA funded project to HOPWA PH",
+      "ShortDescription": "HOPWA PH Transfer", 
+      "Category": "Permanent Housing",
+      "HUDCategory": "Housed",
+      "CategoryCode": 0,
+      "IsPermanent": true,
+      "IsPositiveOutcome": true,
+      "IsHomeless": false,
+      "ReportingGroup": "Permanent",
+      "ValidForEntry": false,
+      "ValidForExit": true,
+      "TargetPopulation": "Persons with HIV/AIDS",
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "435": {
+      "Code": 435,
+      "DataType": "int",
+      "Description": "Rental by client, with GPD TIP housing subsidy",
+      "ShortDescription": "GPD TIP Subsidized Rental",
+      "Category": "Permanent Housing",
+      "HUDCategory": "Housed",
+      "CategoryCode": 0,
+      "IsPermanent": true,
+      "IsPositiveOutcome": true,
+      "IsHomeless": false,
+      "ReportingGroup": "Permanent",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "TargetPopulation": "Veterans",
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "17": {
+      "Code": 17,
+      "DataType": "int",
+      "Description": "Other",
+      "ShortDescription": "Other",
+      "Category": "Other",
+      "HUDCategory": "Other",
+      "CategoryCode": 99,
+      "IsPermanent": null,
+      "IsPositiveOutcome": null,
+      "IsHomeless": null,
+      "ReportingGroup": "Other",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "24": {
+      "Code": 24,
+      "DataType": "int",
+      "Description": "Deceased",
+      "ShortDescription": "Deceased",
+      "Category": "Other", 
+      "HUDCategory": "Other",
+      "CategoryCode": 99,
+      "IsPermanent": null,
+      "IsPositiveOutcome": null,
+      "IsHomeless": null,
+      "ReportingGroup": "Other",
+      "ValidForEntry": false,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "30": {
+      "Code": 30,
+      "DataType": "int",
+      "Description": "No exit interview completed",
+      "ShortDescription": "No Exit Interview",
+      "Category": "Unknown",
+      "HUDCategory": "Unknown",
+      "CategoryCode": 8,
+      "IsPermanent": null,
+      "IsPositiveOutcome": null,
+      "IsHomeless": null,
+      "ReportingGroup": "Unknown",
+      "ValidForEntry": false,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "37": {
+      "Code": 37,
+      "DataType": "int",
+      "Description": "Worker unable to determine",
+      "ShortDescription": "Unable to Determine",
+      "Category": "Unknown",
+      "HUDCategory": "Unknown",
+      "CategoryCode": 8,
+      "IsPermanent": null,
+      "IsPositiveOutcome": null,
+      "IsHomeless": null,
+      "ReportingGroup": "Unknown",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "8": {
+      "Code": 8,
+      "DataType": "int",
+      "Description": "Client doesn't know",
+      "ShortDescription": "Client Doesn't Know",
+      "Category": "Unknown",
+      "HUDCategory": "Unknown", 
+      "CategoryCode": 8,
+      "IsPermanent": null,
+      "IsPositiveOutcome": null,
+      "IsHomeless": null,
+      "ReportingGroup": "Unknown",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "9": {
+      "Code": 9,
+      "DataType": "int",
+      "Description": "Client prefers not to answer",
+      "ShortDescription": "Client Refused",
+      "Category": "Unknown",
+      "HUDCategory": "Unknown",
+      "CategoryCode": 9,
+      "IsPermanent": null,
+      "IsPositiveOutcome": null,
+      "IsHomeless": null,
+      "ReportingGroup": "Unknown",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "99": {
+      "Code": 99,
+      "DataType": "int",
+      "Description": "Data not collected",
+      "ShortDescription": "Data Not Collected",
+      "Category": "Unknown",
+      "HUDCategory": "Unknown",
+      "CategoryCode": 99,
+      "IsPermanent": null,
+      "IsPositiveOutcome": null,
+      "IsHomeless": null,
+      "ReportingGroup": "Unknown",
+      "ValidForEntry": true,
+      "ValidForExit": true,
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    }
+  },
+  "DestinationCategories": {
+    "Permanent Housing": {
+      "Description": "Housing destinations that are intended to be permanent",
+      "IsPositiveOutcome": true,
+      "ReportingPriority": 1,
+      "Color": "#28a745"
+    },
+    "Temporary Housing": {
+      "Description": "Housing destinations that are temporary in nature", 
+      "IsPositiveOutcome": false,
+      "ReportingPriority": 2,
+      "Color": "#ffc107"
+    },
+    "Institutional": {
+      "Description": "Institutional settings including hospitals, jails, treatment facilities",
+      "IsPositiveOutcome": false,
+      "ReportingPriority": 3,
+      "Color": "#fd7e14"
+    },
+    "Unsheltered": {
+      "Description": "Living in places not meant for human habitation",
+      "IsPositiveOutcome": false,
+      "ReportingPriority": 4,
+      "Color": "#dc3545"
+    },
+    "Other": {
+      "Description": "Other outcomes including deceased",
+      "IsPositiveOutcome": null,
+      "ReportingPriority": 5,
+      "Color": "#6c757d"
+    },
+    "Unknown": {
+      "Description": "Unknown or missing destination information",
+      "IsPositiveOutcome": null,
+      "ReportingPriority": 6,
+      "Color": "#6f42c1"
+    }
+  },
+  "Enrollment": {
+    "EnrollmentID": {
+      "DataType": "string",
+      "IsNullable": false,
+      "ValidationRules": {
+        "MaxLength": 32,
+        "Required": true,
+        "Unique": true
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "PersonalID": {
+      "DataType": "string",
+      "IsNullable": false,
+      "ValidationRules": {
+        "MaxLength": 32,
+        "Required": true,
+        "ForeignKey": "Client.PersonalID"
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "ProjectID": {
+      "DataType": "string",
+      "IsNullable": false,
+      "ValidationRules": {
+        "MaxLength": 32,
+        "Required": true,
+        "ForeignKey": "Project.ProjectID"
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "EntryDate": {
+      "DataType": "datetime",
+      "IsNullable": false,
+      "ValidationRules": {
+        "Required": true,
+        "DateRange": "Cannot be in the future",
+        "LogicalCheck": "Must be after project operating start date if provided"
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "HouseholdID": {
+      "DataType": "string",
+      "IsNullable": false,
+      "ValidationRules": {
+        "MaxLength": 32,
+        "Required": true
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "RelationshipToHoH": {
+      "DataType": "int",
+      "IsNullable": false,
+      "ValidValues": [1, 2, 3, 4, 5, 8, 9, 99],
+      "ValueDescriptions": {
+        "1": {
+          "Description": "Self (head of household)",
+          "Category": "Head of Household",
+          "ShortDescription": "Head of Household",
+          "HouseholdRole": "Primary"
+        },
+        "2": {
+          "Description": "Head of household's child",
+          "Category": "Family Member",
+          "ShortDescription": "Child",
+          "HouseholdRole": "Dependent"
+        },
+        "3": {
+          "Description": "Head of household's spouse or partner",
+          "Category": "Family Member", 
+          "ShortDescription": "Spouse/Partner",
+          "HouseholdRole": "Adult"
+        },
+        "4": {
+          "Description": "Head of household's other relation member",
+          "Category": "Family Member",
+          "ShortDescription": "Other Family",
+          "HouseholdRole": "Variable"
+        },
+        "5": {
+          "Description": "Other: non-relation member",
+          "Category": "Other",
+          "ShortDescription": "Non-Related",
+          "HouseholdRole": "Variable"
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown",
+          "ShortDescription": "Don't Know",
+          "HouseholdRole": "Unknown"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown",
+          "ShortDescription": "Refused",
+          "HouseholdRole": "Unknown"
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Unknown",
+          "ShortDescription": "Missing",
+          "HouseholdRole": "Unknown"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "Required": true,
+        "HouseholdRules": "Only one client per household can have value 1"
+      }
+    },
+    "EnrollmentCoC": {
+      "DataType": "string",
+      "IsNullable": true,
+      "ValidationRules": {
+        "Pattern": "^[A-Z]{2}-[0-9]{3}$",
+        "MaxLength": 6
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "LivingSituation": {
+      "DataType": "int",
+      "IsNullable": false,
+      "LookupTable": "Destinations",
+      "ValidValueFilter": "ValidForEntry = true",
+      "ValidationRules": {
+        "Required": true,
+        "ConditionalValidation": "Some project types have restricted valid living situations"
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "RentalSubsidyType": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [428, 419, 431, 433, 434, 420, 436, 437, 438, 439, 440],
+      "ValueDescriptions": {
+        "428": {
+          "Description": "HCV: Housing Choice Voucher",
+          "Category": "Federal Subsidy",
+          "ShortDescription": "Section 8 Voucher",
+          "IsPortable": true
+        },
+        "419": {
+          "Description": "HCV: Public Housing Unit",
+          "Category": "Federal Subsidy", 
+          "ShortDescription": "Public Housing",
+          "IsPortable": false
+        },
+        "431": {
+          "Description": "HCV: Other permanent housing subsidy",
+          "Category": "Federal Subsidy",
+          "ShortDescription": "Other HCV Subsidy",
+          "IsPortable": true
+        },
+        "433": {
+          "Description": "HCV: Permanent Supportive Housing for formerly homeless persons",
+          "Category": "Federal Subsidy",
+          "ShortDescription": "HCV PSH",
+          "IsPortable": false,
+          "TargetPopulation": "Formerly Homeless"
+        },
+        "434": {
+          "Description": "HCV: Permanent Supportive Housing for persons with disabilities",
+          "Category": "Federal Subsidy",
+          "ShortDescription": "HCV Disability",
+          "IsPortable": false,
+          "TargetPopulation": "Persons with Disabilities"
+        },
+        "420": {
+          "Description": "HUD: Other subsidized rental assistance",
+          "Category": "Federal Subsidy",
+          "ShortDescription": "Other HUD Subsidy",
+          "IsPortable": false
+        },
+        "436": {
+          "Description": "USDA: Rural Rental Assistance",
+          "Category": "Federal Subsidy",
+          "ShortDescription": "USDA Rural",
+          "IsPortable": false,
+          "TargetPopulation": "Rural Areas"
+        },
+        "437": {
+          "Description": "State or local government rental assistance",
+          "Category": "State/Local Subsidy",
+          "ShortDescription": "State/Local Rental",
+          "IsPortable": false
+        },
+        "438": {
+          "Description": "Non-government organization rental assistance",
+          "Category": "Private Subsidy",
+          "ShortDescription": "NGO Rental",
+          "IsPortable": false
+        },
+        "439": {
+          "Description": "Private organization rental assistance", 
+          "Category": "Private Subsidy",
+          "ShortDescription": "Private Rental",
+          "IsPortable": false
+        },
+        "440": {
+          "Description": "Other form of rental assistance",
+          "Category": "Other Subsidy",
+          "ShortDescription": "Other Rental",
+          "IsPortable": null
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "ConditionalRequired": "Required if living situation indicates subsidized housing"
+      }
+    },
+    "LengthOfStay": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [10, 11, 2, 3, 4, 5, 8, 9, 99],
+      "ValueDescriptions": {
+        "10": {
+          "Description": "One night or less",
+          "Category": "Very Short Term",
+          "ShortDescription": "1 Night or Less",
+          "DaysRange": "0-1",
+          "SortOrder": 1
+        },
+        "11": {
+          "Description": "Two to six nights",
+          "Category": "Very Short Term",
+          "ShortDescription": "2-6 Nights", 
+          "DaysRange": "2-6",
+          "SortOrder": 2
+        },
+        "2": {
+          "Description": "One week or more, but less than one month",
+          "Category": "Short Term",
+          "ShortDescription": "1 Week to 1 Month",
+          "DaysRange": "7-29",
+          "SortOrder": 3
+        },
+        "3": {
+          "Description": "One month or more, but less than 90 days",
+          "Category": "Short Term",
+          "ShortDescription": "1-3 Months",
+          "DaysRange": "30-89", 
+          "SortOrder": 4
+        },
+        "4": {
+          "Description": "90 days or more but less than one year",
+          "Category": "Medium Term",
+          "ShortDescription": "3 months to 1 Year",
+          "DaysRange": "90-364",
+          "SortOrder": 5
+        },
+        "5": {
+          "Description": "One year or longer",
+          "Category": "Long Term",
+          "ShortDescription": "1+ Years",
+          "DaysRange": "365+",
+          "SortOrder": 6
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown",
+          "ShortDescription": "Don't Know",
+          "SortOrder": 99
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown", 
+          "ShortDescription": "Refused",
+          "SortOrder": 99
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Unknown",
+          "ShortDescription": "Missing",
+          "SortOrder": 99
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "ConditionalRequired": "Required for certain living situations"
+      }
+    },
+    "LOSUnderThreshold": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1, 8, 9, 99],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "Above Threshold",
+          "ShortDescription": "No"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Under Threshold", 
+          "ShortDescription": "Yes"
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown",
+          "ShortDescription": "Don't Know"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown",
+          "ShortDescription": "Refused"
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Unknown",
+          "ShortDescription": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "ConditionalRequired": "Required when LengthOfStay indicates long-term homelessness"
+      }
+    },
+    "PreviousStreetESSH": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1, 8, 9, 99],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "No Previous Street/ESSH",
+          "ShortDescription": "No"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Previous Street/ESSH",
+          "ShortDescription": "Yes",
+          "TriggerAdditionalData": "DateToStreetESSH"
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown", 
+          "ShortDescription": "Don't Know"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown",
+          "ShortDescription": "Refused"
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Unknown",
+          "ShortDescription": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "DateToStreetESSH": {
+      "DataType": "datetime",
+      "IsNullable": true,
+      "ValidationRules": {
+        "ConditionalRequired": "Required if PreviousStreetESSH = 1",
+        "DateRange": "Must be before EntryDate",
+        "LogicalCheck": "Cannot be more than 50 years ago"
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "TimesHomeless": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [1, 2, 3, 4, 8, 9, 99],
+      "ValueDescriptions": {
+        "1": {
+          "Description": "One time",
+          "Category": "Single Episode",
+          "ShortDescription": "1 Time",
+          "SortOrder": 1
+        },
+        "2": {
+          "Description": "Two times",
+          "Category": "Multiple Episodes",
+          "ShortDescription": "2 Times", 
+          "SortOrder": 2
+        },
+        "3": {
+          "Description": "Three times",
+          "Category": "Multiple Episodes",
+          "ShortDescription": "3 Times",
+          "SortOrder": 3
+        },
+        "4": {
+          "Description": "Four or more times",
+          "Category": "Chronic Pattern",
+          "ShortDescription": "4+ Times",
+          "SortOrder": 4
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown",
+          "ShortDescription": "Don't Know",
+          "SortOrder": 99
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown",
+          "ShortDescription": "Refused",
+          "SortOrder": 99
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Unknown",
+          "ShortDescription": "Missing",
+          "SortOrder": 99
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "ConditionalRequired": "Required for chronically homeless determination"
+      }
+    },
+    "MonthsHomeless": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 112, 113, 8, 9, 99],
+      "ValueDescriptions": {
+        "101": {
+          "Description": "One month",
+          "Category": "Short Term",
+          "ShortDescription": "1 Month",
+          "MonthsRange": "1",
+          "SortOrder": 1
+        },
+        "102": {
+          "Description": "Two months", 
+          "Category": "Short Term",
+          "ShortDescription": "2 Months",
+          "MonthsRange": "2",
+          "SortOrder": 2
+        },
+        "103": {
+          "Description": "Three months",
+          "Category": "Short Term",
+          "ShortDescription": "3 Months",
+          "MonthsRange": "3",
+          "SortOrder": 3
+        },
+        "104": {
+          "Description": "Four months",
+          "Category": "Medium Term",
+          "ShortDescription": "4 Months",
+          "MonthsRange": "4",
+          "SortOrder": 4
+        },
+        "105": {
+          "Description": "Five months",
+          "Category": "Medium Term",
+          "ShortDescription": "5 Months",
+          "MonthsRange": "5",
+          "SortOrder": 5
+        },
+        "106": {
+          "Description": "Six months",
+          "Category": "Medium Term",
+          "ShortDescription": "6 Months",
+          "MonthsRange": "6",
+          "SortOrder": 6
+        },
+        "107": {
+          "Description": "Seven months",
+          "Category": "Medium Term",
+          "ShortDescription": "7 Months",
+          "MonthsRange": "7", 
+          "SortOrder": 7
+        },
+        "108": {
+          "Description": "Eight months",
+          "Category": "Medium Term",
+          "ShortDescription": "8 Months",
+          "MonthsRange": "8",
+          "SortOrder": 8
+        },
+        "109": {
+          "Description": "Nine months",
+          "Category": "Medium Term",
+          "ShortDescription": "9 Months",
+          "MonthsRange": "9",
+          "SortOrder": 9
+        },
+        "110": {
+          "Description": "Ten months",
+          "Category": "Medium Term",
+          "ShortDescription": "10 Months",
+          "MonthsRange": "10",
+          "SortOrder": 10
+        },
+        "112": {
+          "Description": "Eleven months",
+          "Category": "Long Term",
+          "ShortDescription": "11 Months",
+          "MonthsRange": "11",
+          "SortOrder": 11
+        },
+        "113": {
+          "Description": "Twelve months",
+          "Category": "Long Term",
+          "ShortDescription": "12+ Months",
+          "MonthsRange": "12+",
+          "SortOrder": 12,
+          "ChronicIndicator": true
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown", 
+          "ShortDescription": "Don't Know",
+          "SortOrder": 99
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown",
+          "ShortDescription": "Refused", 
+          "SortOrder": 99
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Unknown",
+          "ShortDescription": "Missing",
+          "SortOrder": 99
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "ConditionalRequired": "Required for chronically homeless determination"
+      }
+    },
+    "DisablingCondition": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [0, 1, 8, 9, 99],
+      "ValueDescriptions": {
+        "0": {
+          "Description": "No",
+          "Category": "No Disabling Condition",
+          "ShortDescription": "No"
+        },
+        "1": {
+          "Description": "Yes",
+          "Category": "Has Disabling Condition",
+          "ShortDescription": "Yes",
+          "ChronicEligible": true
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown",
+          "ShortDescription": "Don't Know"
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown",
+          "ShortDescription": "Refused"
+        },
+        "99": {
+          "Description": "Data not collected", 
+          "Category": "Unknown",
+          "ShortDescription": "Missing"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "ConditionalRequired": "Required for certain project types"
+      }
+    },
+    "MoveInDate": {
+      "DataType": "datetime",
+      "IsNullable": true,
+      "ValidationRules": {
+        "ConditionalRequired": "Required for permanent housing projects when client moves to permanent housing",
+        "DateRange": "Must be on or after EntryDate",
+        "LogicalCheck": "Cannot be in the future"
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "IsConsolidated": {
+      "DataType": "boolean",
+      "IsNullable": false,
+      "DefaultValue": false,
+      "ValidationRules": {
+        "BusinessRule": "Internal consolidation tracking field"
+      }
+    },
+    "ConsolidatedWith": {
+      "DataType": "string",
+      "IsNullable": true,
+      "ValidationRules": {
+        "ConditionalRequired": "Required if IsConsolidated = true",
+        "ForeignKey": "Enrollment.EnrollmentID"
+      }
+    }
+  },
+  "Exit": {
+    "ExitID": {
+      "DataType": "string",
+      "IsNullable": false,
+      "ValidationRules": {
+        "MaxLength": 32,
+        "Required": true,
+        "Unique": true
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "EnrollmentID": {
+      "DataType": "string",
+      "IsNullable": false,
+      "ValidationRules": {
+        "MaxLength": 32,
+        "Required": true,
+        "ForeignKey": "Enrollment.EnrollmentID",
+        "UniqueConstraint": "One exit per enrollment"
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "ExitDate": {
+      "DataType": "datetime",
+      "IsNullable": false,
+      "ValidationRules": {
+        "Required": true,
+        "DateRange": "Cannot be in the future beyond 30 days",
+        "LogicalCheck": "Must be on or after enrollment EntryDate"
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "Destination": {
+      "DataType": "int",
+      "IsNullable": false,
+      "LookupTable": "Destinations",
+      "ValidValueFilter": "ValidForExit = true",
+      "ValidationRules": {
+        "Required": true
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "OtherDestination": {
+      "DataType": "string",
+      "IsNullable": true,
+      "ValidationRules": {
+        "MaxLength": 500,
+        "ConditionalRequired": "Required if Destination = 17 (Other)"
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "DestinationSubsidyType": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [428, 419, 431, 433, 434, 420, 436, 437, 438, 439, 440],
+      "ValueDescriptions": {
+        "428": {
+          "Description": "HCV: Housing Choice Voucher",
+          "Category": "Federal Subsidy",
+          "ShortDescription": "Section 8 Voucher",
+          "IsPortable": true
+        },
+        "419": {
+          "Description": "HCV: Public Housing Unit",
+          "Category": "Federal Subsidy",
+          "ShortDescription": "Public Housing",
+          "IsPortable": false
+        },
+        "431": {
+          "Description": "HCV: Other permanent housing subsidy",
+          "Category": "Federal Subsidy",
+          "ShortDescription": "Other HCV Subsidy",
+          "IsPortable": true
+        },
+        "433": {
+          "Description": "HCV: Permanent Supportive Housing for formerly homeless persons",
+          "Category": "Federal Subsidy",
+          "ShortDescription": "HCV PSH",
+          "IsPortable": false,
+          "TargetPopulation": "Formerly Homeless"
+        },
+        "434": {
+          "Description": "HCV: Permanent Supportive Housing for persons with disabilities",
+          "Category": "Federal Subsidy",
+          "ShortDescription": "HCV Disability",
+          "IsPortable": false,
+          "TargetPopulation": "Persons with Disabilities"
+        },
+        "420": {
+          "Description": "HUD: Other subsidized rental assistance",
+          "Category": "Federal Subsidy",
+          "ShortDescription": "Other HUD Subsidy",
+          "IsPortable": false
+        },
+        "436": {
+          "Description": "USDA: Rural Rental Assistance",
+          "Category": "Federal Subsidy",
+          "ShortDescription": "USDA Rural",
+          "IsPortable": false,
+          "TargetPopulation": "Rural Areas"
+        },
+        "437": {
+          "Description": "State or local government rental assistance",
+          "Category": "State/Local Subsidy",
+          "ShortDescription": "State/Local Rental",
+          "IsPortable": false
+        },
+        "438": {
+          "Description": "Non-government organization rental assistance",
+          "Category": "Private Subsidy",
+          "ShortDescription": "NGO Rental",
+          "IsPortable": false
+        },
+        "439": {
+          "Description": "Private organization rental assistance",
+          "Category": "Private Subsidy",
+          "ShortDescription": "Private Rental",
+          "IsPortable": false
+        },
+        "440": {
+          "Description": "Other form of rental assistance",
+          "Category": "Other Subsidy",
+          "ShortDescription": "Other Rental",
+          "IsPortable": null
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "ConditionalRequired": "Required if destination indicates subsidized permanent housing"
+      }
+    },
+    "HousingAssessment": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [1, 2, 3, 4, 5, 6, 7, 10, 8, 9, 99],
+      "ValueDescriptions": {
+        "1": {
+          "Description": "Able to maintain housing without ongoing housing subsidy",
+          "Category": "Self-Sufficient",
+          "ShortDescription": "Self-Sufficient",
+          "StabilityLevel": "High",
+          "SortOrder": 1
+        },
+        "2": {
+          "Description": "Able to maintain housing with ongoing housing subsidy but without supportive services",
+          "Category": "Subsidy Only",
+          "ShortDescription": "Subsidy Needed",
+          "StabilityLevel": "Medium-High",
+          "SortOrder": 2
+        },
+        "3": {
+          "Description": "Able to maintain housing with ongoing housing subsidy and case management or other services",
+          "Category": "Subsidy + Light Services",
+          "ShortDescription": "Subsidy + Case Mgmt",
+          "StabilityLevel": "Medium",
+          "SortOrder": 3
+        },
+        "4": {
+          "Description": "Able to maintain housing only with ongoing housing subsidy and intensive wraparound supportive services",
+          "Category": "High Support Needed",
+          "ShortDescription": "Intensive Support",
+          "StabilityLevel": "Low-Medium",
+          "SortOrder": 4
+        },
+        "5": {
+          "Description": "Unable to maintain housing even with ongoing housing subsidy and intensive wraparound supportive services",
+          "Category": "Unable to Maintain",
+          "ShortDescription": "Cannot Maintain",
+          "StabilityLevel": "Low",
+          "SortOrder": 5
+        },
+        "6": {
+          "Description": "Unable to assess due to barriers or other circumstances",
+          "Category": "Unable to Assess",
+          "ShortDescription": "Unable to Assess",
+          "StabilityLevel": "Unknown",
+          "SortOrder": 6
+        },
+        "7": {
+          "Description": "Assessment questionable/unreliable",
+          "Category": "Unreliable Assessment",
+          "ShortDescription": "Unreliable",
+          "StabilityLevel": "Unknown",
+          "SortOrder": 7
+        },
+        "10": {
+          "Description": "Unable to determine",
+          "Category": "Unable to Determine",
+          "ShortDescription": "Unable to Determine",
+          "StabilityLevel": "Unknown",
+          "SortOrder": 8
+        },
+        "8": {
+          "Description": "Client doesn't know",
+          "Category": "Unknown",
+          "ShortDescription": "Don't Know",
+          "StabilityLevel": "Unknown",
+          "SortOrder": 99
+        },
+        "9": {
+          "Description": "Client prefers not to answer",
+          "Category": "Unknown",
+          "ShortDescription": "Refused",
+          "StabilityLevel": "Unknown",
+          "SortOrder": 99
+        },
+        "99": {
+          "Description": "Data not collected",
+          "Category": "Unknown",
+          "ShortDescription": "Missing",
+          "StabilityLevel": "Unknown",
+          "SortOrder": 99
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "ConditionalRequired": "Required for certain project types"
+      }
+    },
+    "SubsidyInformation": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [1, 2, 3, 4],
+      "ValueDescriptions": {
+        "1": {
+          "Description": "Without a subsidy",
+          "Category": "No Subsidy",
+          "ShortDescription": "No Subsidy",
+          "HasSubsidy": false
+        },
+        "2": {
+          "Description": "With the subsidy they had at project entry",
+          "Category": "Existing Subsidy",
+          "ShortDescription": "Existing Subsidy",
+          "HasSubsidy": true,
+          "SubsidyStatus": "Continued"
+        },
+        "3": {
+          "Description": "With a new subsidy acquired since project entry",
+          "Category": "New Subsidy",
+          "ShortDescription": "New Subsidy",
+          "HasSubsidy": true,
+          "SubsidyStatus": "Acquired"
+        },
+        "4": {
+          "Description": "It is unknown whether the client will have a subsidy",
+          "Category": "Unknown",
+          "ShortDescription": "Unknown",
+          "HasSubsidy": null,
+          "SubsidyStatus": "Unknown"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "ConditionalRequired": "Required when destination is permanent housing"
+      }
+    },
+    "ProjectCompletionStatus": {
+      "DataType": "int",
+      "IsNullable": true,
+      "ValidValues": [1, 2, 3],
+      "ValueDescriptions": {
+        "1": {
+          "Description": "Completed project",
+          "Category": "Successful Completion",
+          "ShortDescription": "Completed",
+          "IsPositiveOutcome": true,
+          "CompletionType": "Goal Achievement"
+        },
+        "2": {
+          "Description": "Left project before completion",
+          "Category": "Early Exit",
+          "ShortDescription": "Left Early",
+          "IsPositiveOutcome": false,
+          "CompletionType": "Premature Exit"
+        },
+        "3": {
+          "Description": "Expelled or terminated from project for rule/behavioral violations",
+          "Category": "Terminated",
+          "ShortDescription": "Terminated",
+          "IsPositiveOutcome": false,
+          "CompletionType": "Involuntary Exit"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "ConditionalRequired": "Required for transitional housing and some permanent housing project types"
+      }
+    }
+  },
+  "Project": {
+    "ProjectType": {
+      "DataType": "int",
+      "IsNullable": false,
+      "ValidValues": [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+      "ValueDescriptions": {
+        "1": {
+          "Description": "Emergency Shelter",
+          "Category": "Crisis Response",
+          "HUDCategory": "ES",
+          "Abbreviation": "ES",
+          "AllowsNightByNight": true,
+          "RequiresMoveInDate": false,
+          "TypicalLOS": "Short-term",
+          "FundingEligibility": ["ESG", "COC", "State", "Local"]
+        },
+        "2": {
+          "Description": "Transitional Housing",
+          "Category": "Transitional",
+          "HUDCategory": "TH", 
+          "Abbreviation": "TH",
+          "AllowsNightByNight": false,
+          "RequiresMoveInDate": true,
+          "TypicalLOS": "Up to 24 months",
+          "FundingEligibility": ["COC", "State", "Local"]
+        },
+        "3": {
+          "Description": "PH - Permanent Supportive Housing",
+          "Category": "Permanent Housing",
+          "HUDCategory": "PSH",
+          "Abbreviation": "PSH", 
+          "AllowsNightByNight": false,
+          "RequiresMoveInDate": true,
+          "TypicalLOS": "Indefinite",
+          "FundingEligibility": ["COC", "HOPWA"],
+          "RequiresDisability": true
+        },
+        "4": {
+          "Description": "Street Outreach",
+          "Category": "Crisis Response",
+          "HUDCategory": "SO",
+          "Abbreviation": "SO",
+          "AllowsNightByNight": false,
+          "RequiresMoveInDate": false,
+          "TypicalLOS": "Contact-based",
+          "FundingEligibility": ["COC", "ESG"]
+        },
+        "6": {
+          "Description": "Services Only",
+          "Category": "Supportive Services",
+          "HUDCategory": "SSO",
+          "Abbreviation": "SSO",
+          "AllowsNightByNight": false,
+          "RequiresMoveInDate": false,
+          "TypicalLOS": "Variable",
+          "FundingEligibility": ["COC"]
+        },
+        "7": {
+          "Description": "Other",
+          "Category": "Other",
+          "HUDCategory": "Other",
+          "Abbreviation": "Other",
+          "AllowsNightByNight": false,
+          "RequiresMoveInDate": false,
+          "TypicalLOS": "Variable",
+          "FundingEligibility": ["Various"]
+        },
+        "8": {
+          "Description": "Safe Haven",
+          "Category": "Crisis Response", 
+          "HUDCategory": "SH",
+          "Abbreviation": "SH",
+          "AllowsNightByNight": false,
+          "RequiresMoveInDate": true,
+          "TypicalLOS": "Variable",
+          "FundingEligibility": ["COC"],
+          "TargetPopulation": "Hard to serve with severe mental illness"
+        },
+        "9": {
+          "Description": "PH - Housing Only",
+          "Category": "Permanent Housing",
+          "HUDCategory": "PH",
+          "Abbreviation": "PH-HO",
+          "AllowsNightByNight": false,
+          "RequiresMoveInDate": true,
+          "TypicalLOS": "Indefinite", 
+          "FundingEligibility": ["COC"]
+        },
+        "10": {
+          "Description": "PH - Housing with Services (no disability required for entry)",
+          "Category": "Permanent Housing",
+          "HUDCategory": "PH",
+          "Abbreviation": "PH-HwS",
+          "AllowsNightByNight": false,
+          "RequiresMoveInDate": true,
+          "TypicalLOS": "Indefinite",
+          "FundingEligibility": ["COC"],
+          "RequiresDisability": false
+        },
+        "11": {
+          "Description": "Day Shelter",
+          "Category": "Crisis Response",
+          "HUDCategory": "Day Shelter",
+          "Abbreviation": "Day",
+          "AllowsNightByNight": false,
+          "RequiresMoveInDate": false,
+          "TypicalLOS": "Daily contact",
+          "FundingEligibility": ["ESG", "State", "Local"]
+        },
+        "12": {
+          "Description": "Homelessness Prevention",
+          "Category": "Prevention",
+          "HUDCategory": "HP",
+          "Abbreviation": "HP",
+          "AllowsNightByNight": false,
+          "RequiresMoveInDate": false,
+          "TypicalLOS": "Up to 24 months",
+          "FundingEligibility": ["ESG", "HOPWA"],
+          "TargetPopulation": "At risk of homelessness"
+        },
+        "13": {
+          "Description": "PH - Rapid Re-Housing",
+          "Category": "Permanent Housing",
+          "HUDCategory": "RRH",
+          "Abbreviation": "RRH",
+          "AllowsNightByNight": false,
+          "RequiresMoveInDate": true,
+          "TypicalLOS": "Up to 24 months",
+          "FundingEligibility": ["COC", "ESG", "HOPWA"]
+        },
+        "14": {
+          "Description": "Coordinated Entry",
+          "Category": "System Component",
+          "HUDCategory": "CE",
+          "Abbreviation": "CE",
+          "AllowsNightByNight": false,
+          "RequiresMoveInDate": false,
+          "TypicalLOS": "Assessment/Referral",
+          "FundingEligibility": ["COC"]
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "Required": true
+      }
+    },
+    "HousingType": {
+      "DataType": "int", 
+      "IsNullable": true,
+      "ValidValues": [1, 2, 3],
+      "ValueDescriptions": {
+        "1": {
+          "Description": "Site-based - single site",
+          "Category": "Site-based",
+          "Characteristics": "All housing units are at one location",
+          "ApplicableProjectTypes": [1, 2, 3, 8, 9, 10]
+        },
+        "2": {
+          "Description": "Site-based - clustered/multiple sites", 
+          "Category": "Site-based",
+          "Characteristics": "Housing units are at multiple locations but not scattered site",
+          "ApplicableProjectTypes": [1, 2, 3, 8, 9, 10]
+        },
+        "3": {
+          "Description": "Tenant-based rental assistance",
+          "Category": "Tenant-based",
+          "Characteristics": "Rental assistance provided to clients in housing of their choice",
+          "ApplicableProjectTypes": [3, 9, 10, 13]
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "ConditionalRequired": "Required for project types 1, 2, 3, 8, 9, 10, 13"
+      }
+    },
+    "RRHSubType": {
+      "DataType": "int",
+      "IsNullable": true, 
+      "ValidValues": [1, 2],
+      "ValueDescriptions": {
+        "1": {
+          "Description": "Services only",
+          "Category": "Services Only",
+          "Characteristics": "Provides case management and supportive services but no financial assistance"
+        },
+        "2": {
+          "Description": "Services + financial assistance",
+          "Category": "Services + Financial",
+          "Characteristics": "Provides both supportive services and rental/utility assistance"
+        }
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8",
+      "ValidationRules": {
+        "ConditionalRequired": "Required only when ProjectType = 13 (RRH)"
+      }
+    },
+    "OperatingStartDate": {
+      "DataType": "datetime",
+      "IsNullable": true,
+      "ValidationRules": {
+        "DateRange": "Cannot be in the future",
+        "LogicalCheck": "Must be before OperatingEndDate if both are provided"
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "OperatingEndDate": {
+      "DataType": "datetime", 
+      "IsNullable": true,
+      "ValidationRules": {
+        "DateRange": "Cannot be in the future beyond 30 days",
+        "LogicalCheck": "Must be after OperatingStartDate if both are provided"
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "ProjectName": {
+      "DataType": "string",
+      "IsNullable": false,
+      "ValidationRules": {
+        "MaxLength": 200,
+        "Required": true
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    },
+    "ProjectID": {
+      "DataType": "string",
+      "IsNullable": false,
+      "ValidationRules": {
+        "MaxLength": 32,
+        "Required": true,
+        "Unique": true
+      },
+      "HUDStandard": "2024 HMIS Data Standards Manual v1.8"
+    }
+  }
+}
