@@ -240,9 +240,9 @@ function Register-Incident {
                 $UnknownMessage = "Unknown incident code provided"
                 $UnknownDetail = "Code provided: $Code"
 
-                Write-Log -Context $Context -Level $"Warning" -Message $UnknownMessage `
+                Write-Log -Context $Context -Level "Warning" -Message $UnknownMessage `
                     -Detail $UnknownDetail
-                
+
                 $Definition = $Default
             }
         }
@@ -330,6 +330,55 @@ function Register-Incident {
     if ($Levels[$Incident.Level] -ge $Levels[$Context.Config.LogLevel]) {
         Write-Log -Context $Context -Level $Incident.Level -Message $Incident.Message `
             -Detail $Incident.Detail -Recommendation $Incident.Recommendation
+    }
+}
+
+function Write-StageSummaryReport {
+    <#
+    .SYNOPSIS
+        Writes a formatted stage summary report to the log
+    .DESCRIPTION
+        Iterates through $Context.StageSummary items and writes them to the log
+        with formatted status indicators. Provides a clean summary of stage actions.
+    .PARAMETER Context
+        Pipeline context object containing StageSummary array
+    .EXAMPLE
+        Write-StageSummaryReport -Context $Context
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [PSCustomObject]$Context
+    )
+
+    try {
+        if (-not $Context.StageSummary -or $Context.StageSummary.Count -eq 0) {
+            Write-Verbose "No stage summary items to report"
+            return
+        }
+
+        Write-Log -Context $Context -Level "Info" -Message "=== Stage Summary Report ==="
+
+        foreach ($item in $Context.StageSummary) {
+            # Determine status symbol
+            $statusSymbol = switch ($item.Status) {
+                "Success" { "[✓]" }
+                "Warning" { "[!]" }
+                "Failed"  { "[✗]" }
+                "Skipped" { "[-]" }
+                default   { "[ ]" }
+            }
+
+            # Write summary item
+            Write-Log -Context $Context -Level "Info" `
+                -Message "$statusSymbol $($item.Action)" `
+                -Detail $item.Detail
+        }
+
+        Write-Log -Context $Context -Level "Info" -Message "=== End Stage Summary ==="
+    }
+    catch {
+        Write-Warning "Failed to write stage summary report: $_"
     }
 }
 #endregion Wrappers

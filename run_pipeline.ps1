@@ -311,7 +311,7 @@ function Add-StaticData {
 
     # Add HUD Schema
     try {
-        $HUD_SchemaFile = $Config.Static_Data.HUD_Schema
+        $HUD_SchemaFile = $Context.Config.Static_Data.HUD_Schema
         $HUD_Schema = Get-Content $HUD_SchemaFile | ConvertFrom-Json -AsHashtable
 
         if (-not $HUD_Schema) {
@@ -376,7 +376,7 @@ function Get-Manifest {
             $Manifest = New-Manifest -JsonItem $Manifest
 
             if($Manifest.Type -eq $Context.Stage.InputFrom) {
-                Register-Incident -Context $Context -Code '' `
+                Register-Incident -Context $Context -Code 'I0S_002' `
                     -Detail "Using provided manifest file: $ExplicitPath"
 
                 return $Manifest
@@ -384,11 +384,11 @@ function Get-Manifest {
             } else {
                 Register-Incident -Context $Context -Code "I0S_002" `
                     -Detail "Using manifest from file: $ExplicitPath"
-                Register-Incident -Context $Context -Code "W0F_001"
+                Register-Incident -Context $Context -Code "W0F_001" `
                     -Detail "Searching for manifest type: $($Context.Stage.InputFrom)"
             }
         } else {
-            Register-Incident -Context $Context -Code "I0S_003"
+            Register-Incident -Context $Context -Code "I0S_003" `
                 -Detail "Searching for manifest type: $($Context.Stage.InputFrom)"
         }
 
@@ -485,7 +485,7 @@ function New-Manifest {
             # $Stage              = $Context.Stage
             # $Type               = $Stage.Name
             $DateGenerated      = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-            $SavePath           = $Context.Directories.Manifests
+            $SavePath           = $Context.Config.Directories.Manifests
             $SaveName           = $null
 
             if (-not $StageNumber) {
@@ -505,7 +505,7 @@ function New-Manifest {
                     }
                 }
                 Default {
-                    throw 'New-Manifest does not have settings for the stage number provided: $StageNumber'
+                    throw "New-Manifest does not have settings for the stage number provided: $StageNumber"
                 }
             }
 
@@ -532,7 +532,7 @@ function New-Manifest {
     }
     catch {
         # Log incident details
-        Register-Incident -Context $Context -ErrorCode "W0S_004" -Detail $($_.Exception.Message)
+        Register-Incident -Context $Context -Code "W0S_004" -Detail $($_.Exception.Message)
 
         return $null
     }
@@ -646,9 +646,9 @@ function Invoke-Stage {
 
             # Check and skip stage if necessary
             if ($Stage -notin $Context.RunStages) {
-                Register-Incident -Context $Context -Code 'W0S_003'
-                    -Detail "Skipped stage: $StageNumber"
-                $Context.StageResults[$Stage.Name] = @{
+                $StageName = $Context.Config.Stages[[string]$Stage].Name
+                Register-Incident -Context $Context -Code 'W0S_003' -Detail "Skipped stage - $StageName"
+                $Context.StageResults[$StageName] = @{
                     Success = $false
                     Skipped = $true
                 }
@@ -685,7 +685,7 @@ function Invoke-Stage {
                 }
 
                 if ($StageInfo.HasManifest) {
-                    $ManifestOut = New-Manifest -Context $Context -Stage $StageInfo.Number
+                    $ManifestOut = New-Manifest -Context $Context -StageNumber $StageInfo.Number
                     if (-not $ManifestOut) {
                         throw "Stage output data (manifest) could not be prepared"
                     }
@@ -742,17 +742,22 @@ function Invoke-Stage {
                 $Context.ManifestOut = $null
             }
 
-            # Log stage complete and generate summary report
-            # TODO Write-StageSummaryReport
-            $Context.StageSummary = @()
-
             # Reset the error flag so that future stages can run
             if ($Context.HasErrors) {
                 $Context.HasErrors = $false
             }
+
+            # Log stage complete and generate summary report
+            Register-Incident -Context $Context -Code 'I0S_005' -Detail "Completed stage: $StageName"
+
+            if ($Context.StageSummary -and $Context.StageSummary.Count -gt 0) {
+                Write-StageSummaryReport -Context $Context
+            }
+
+            $Context.StageSummary = @()
         }
         catch {
-            Register-Incident -Context $Context -Code $'F0S_002' -Detail $($_.Exception.Message)
+            Register-Incident -Context $Context -Code 'F0S_002' -Detail $($_.Exception.Message)
         }
     }
 
@@ -762,10 +767,10 @@ function Invoke-Stage {
 
         if (-not $Context.HasErrors) {
             # Launch the stage script
-            $ScriptFilePath = Join-Path $Config.Directories.Scripts $Context.Stage.Filename
-            $Result = . $ScriptFilePath
+            $ScriptFilePath = Join-Path $Context.Config.Directories.Scripts $Context.Stage.Filename
+            $Result = . $ScriptFilePath -Context $Context
 
-            $Context.StageResults[$Stage.Name] = @{
+            $Context.StageResults[$Context.StageName] = @{
                 Success = $Result.Success
                 Skipped = $false
             }
@@ -782,15 +787,16 @@ function Invoke-Stage {
 function Stop-Pipeline {
     <#
     .SYNOPSIS
-        TODOC Brief function description
+        Performs pipeline cleanup and finalization
     .DESCRIPTION
-        TODOC Detailed description
-    .PARAMETER ParameterName
-        TODOC Parameter description
+        Cleans up temporary files, disconnects resources, and performs
+        final logging before pipeline termination.
+    .PARAMETER Context
+        Pipeline context object
     .EXAMPLE
-        TODOC Verb-Noun -ParameterName "Value"
+        Stop-Pipeline -Context $Context
     .OUTPUTS
-        TODOC [PSCustomObject] with properties: Property1, Property2
+        None
     #>
     [CmdletBinding()]
     param(
@@ -800,8 +806,43 @@ function Stop-Pipeline {
     )
 
     try {
+        # Clean up temporary files created during pipeline execution
+        if ($Context.PSObject.Properties['TempFiles'] -and $Context.TempFiles.Count -gt 0) {
+            Register-Incident -Context $Context -Code 'I0S_001' `
+                -Detail "Cleaning up $($Context.TempFiles.Count) temporary folder(s)"
+
+            foreach ($tempPath in $Context.TempFiles) {
+                if (Test-Path $tempPath) {
+                    try {
+                        Remove-Item -Path $tempPath -Recurse -Force -ErrorAction Stop
+                        Register-Incident -Context $Context -Code 'D0F_001' `
+                            -Detail "Removed temp folder: $tempPath"
+                    }
+                    catch {
+                        Register-Incident -Context $Context -Code 'W0S_001' `
+                            -Detail "Failed to remove temp folder: $tempPath - $($_.Exception.Message)"
+                    }
+                }
+            }
+        }
+
+        # Disconnect SharePoint if connected
+        try {
+            $SharePointModule = $Context.Config.Utilities.SharePoint
+            if (Get-Module -Name ([System.IO.Path]::GetFileNameWithoutExtension($SharePointModule))) {
+                Disconnect-SharePoint | Out-Null
+            }
+        }
+        catch {
+            # Silently continue - SharePoint module may not be loaded
+        }
+
+        Register-Incident -Context $Context -Code 'I0S_001' `
+            -Detail "Pipeline execution completed. Duration: $((Get-Date) - $Context.StartTime)"
     }
     catch {
+        Register-Incident -Context $Context -Code 'W0S_001' `
+            -Detail "Error during pipeline cleanup: $($_.Exception.Message)"
     }
 }
 #endregion Functions

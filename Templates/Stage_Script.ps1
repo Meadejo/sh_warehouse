@@ -102,9 +102,9 @@ try {
 }
 catch {
     # Log and report failure details
-    Register-Incident -Context $Context -ErrorCode $_.Exception.Message `
-        -Detail $_.ScriptStackTrace -Message $Message -Record $Record
-    
+    Register-Incident -Context $Context -Code $_.Exception.Message `
+        -Detail $_.ScriptStackTrace -Message $Message -RecordContext $Record
+
     return [PSCustomObject]@{
         Success = $false
         Data = $null
@@ -132,9 +132,9 @@ try {
 }
 catch {
     # Log and report failure details
-    Register-Incident -Context $Context -ErrorCode $_.Exception.Message `
-        -Detail $_.ScriptStackTrace -Message $Message -Record $Record
-    
+    Register-Incident -Context $Context -Code $_.Exception.Message `
+        -Detail $_.ScriptStackTrace -Message $Message -RecordContext $Record
+
     return [PSCustomObject]@{
         Success = $false
         Data = $null

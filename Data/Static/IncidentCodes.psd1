@@ -20,6 +20,27 @@
 
 
     #region Error
+    E1SP_001 = @{
+        Stage = "Discovery"
+        Category = "SharePoint"
+        Level = "Error"
+        Message = "Failed to connect to SharePoint"
+        Recommendation = "Check SharePoint configuration and credentials"
+    }
+    E1F_001 = @{
+        Stage = "Discovery"
+        Category = "File I/O"
+        Level = "Error"
+        Message = "Failed to download ZIP file from SharePoint"
+        Recommendation = "Check file path and SharePoint permissions"
+    }
+    E1F_002 = @{
+        Stage = "Discovery"
+        Category = "File I/O"
+        Level = "Error"
+        Message = "Failed to extract ZIP file"
+        Recommendation = "Check ZIP file integrity and disk space"
+    }
     # E0C_001 = @{
     #     Stage = "Orchestration"
     #     Category = "Configuration"
@@ -103,6 +124,24 @@
 
 
     #region Info
+    I1S_001 = @{
+        Stage = "Discovery"
+        Category = "Staging"
+        Level = "Info"
+        Message = "Discovery stage initiated"
+    }
+    I1F_001 = @{
+        Stage = "Discovery"
+        Category = "File I/O"
+        Level = "Info"
+        Message = "ZIP file downloaded from SharePoint"
+    }
+    I1F_002 = @{
+        Stage = "Discovery"
+        Category = "File I/O"
+        Level = "Info"
+        Message = "ZIP file extracted successfully"
+    }
     I0S_001 = @{
         Stage = "Orchestration"
         Category = "Staging"
@@ -127,10 +166,35 @@
         Level = "Info"
         Message = "Starting Stage"
     }
+    I0S_005 = @{
+        Stage = "Orchestration"
+        Category = "Staging"
+        Level = "Info"
+        Message = "Stage completed successfully"
+    }
+    W1F_001 = @{
+        Stage = "Discovery"
+        Category = "File I/O"
+        Level = "Warning"
+        Message = "Invalid CSV file structure"
+        Recommendation = "Check CSV file format and headers"
+    }
+    W1F_002 = @{
+        Stage = "Discovery"
+        Category = "File I/O"
+        Level = "Warning"
+        Message = "Unknown file type encountered"
+    }
     #endregion Info
 
 
     #region Debug
+    D1F_001 = @{
+        Stage = "Discovery"
+        Category = "File I/O"
+        Level = "Debug"
+        Message = "Processing CSV file"
+    }
     D0F_001 = @{
         Stage = "Orchestration"
         Category = "File I/O"
