@@ -13,9 +13,9 @@
 
 #Requires -Version 5.1
 
-#region Script Parameters
+#region Module Parameters
 
-#endregion Script Parameters
+#endregion Module Parameters
 
 #region Template
 function Verb-Noun {
@@ -40,28 +40,23 @@ function Verb-Noun {
         [ValidateNotNullOrEmpty()]
         [PSCustomObject]$Context
     )
-    $Incidents = @()
+    $ThrowCode = "Generic_Code"
     
     try {
         # Function logic here
+        Invoke-Function
 
-        # Return standardized object
-        return [PSCustomObject]@{
-            Success = $true
-            Data = $result
-            Incidents = $Incidents
-        }
+        # If issue is encountered
+        $ThrowCode = "Specific_Code"
+        throw "Issue Details"
+        
+        # Return expected output
+        return $Result
     }
     catch {
         # Log incident details
-        $Incident = Trace-Incident -Context $Context -ErrorCode $ErrorCode
-        if ($Incident) {$Incidents += $Incident}
-        
-        return [PSCustomObject]@{
-            Success = $false
-            Data = $null
-            Incidents = $Incidents
-        }
+        Register-Incident -Context $Context -Code $ThrowCode `
+            -Detail $($_.Exception.Message)
     }
 }
 #endregion Template

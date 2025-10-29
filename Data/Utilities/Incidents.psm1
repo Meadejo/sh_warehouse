@@ -7,7 +7,7 @@
     NOTE: Update the 'Updated' date!
     Author: Joshua Meade
     Created: October 17, 2025
-    Updated: October 20, 2025
+    Updated: October 25, 2025
     Module: Incidents.psm1
 #>
 
@@ -75,47 +75,43 @@ function New-ErrorObj {
         TODOC [PSCustomObject] with properties: Property1, Property2
     #>
     param(
+        [Parameter(Mandatory=$true)]
         [PSCustomObject]$Context,
+        [Parameter(Mandatory=$true)]
         [string]$ErrorCode,
-        [string]$Message = "",  # Now optional - can use default from definition
-        [string]$Detail = "",
-        [hashtable]$RecordContext = @{},
-        [string]$Recommendation = ""  # Also optional
+        [string]$Message            = "",
+        [string]$Detail             = "",
+        [string]$Recommendation     = "",
+        [hashtable]$RecordContext   = @{}
     )
     
     # Lookup error definition
-    $Definition = $Context.ErrorCodes[$ErrorCode]
+    $Definition = $Context.IncidentCodes[$ErrorCode]
     
     if (-not $Definition) {
         Write-Warning "Unknown error code: $ErrorCode - using defaults"
         $Definition = @{
-            Severity = "Error"
-            DefaultMessage = "Unknown error"
-            DefaultRecommendation = "Check error code definition"
+            Level = "Error"
+            Message = "Unknown error"
+            Recommendation = "Check error code definition"
         }
     }
     
     # Use provided values or fall back to definitions
-    $FinalMessage = if ($Message) { $Message } else { $Definition.DefaultMessage }
-    $FinalRecommendation = if ($Recommendation) { $Recommendation } else { $Definition.DefaultRecommendation }
-
-    # Immediately throw for all fatal errors.
-    if ($Definition.Severity -eq 'Fatal') {
-        $Context.HasCriticalErrors = $true
-        Write-Log -Context $Context -Level $Level -Message $FinalMessage
-        throw "Fatal error: $FinalMessage"
-    }
+    $FinalMessage = if ($Message) { $Message } else { $Definition.Message }
+    $FinalRecommendation = if ($Recommendation) { $Recommendation } else { $Definition.Recommendation }
     
     return [PSCustomObject]@{
+        PSTypeName      = 'Error'
         Timestamp       = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
         ExecutionID     = $Context.ExecutionID
         Stage           = $Context.StageName
-        Severity        = $Definition.Severity
-        ErrorCode       = $ErrorCode
+        Severity        = $Definition.Level
+        Code            = $ErrorCode
         Message         = $FinalMessage
         Detail          = $Detail
-        RecordContext   = $RecordContext
         Recommendation  = $FinalRecommendation
+        Context         = $RecordContext
     }
 }
 
@@ -129,7 +125,7 @@ function Write-Log {
     .PARAMETER Context
         Pipeline context object containing log file path and settings
     .PARAMETER Level
-        Log level (Info, Warning, Error, Fatal)
+        Log level (Debug, Info, Warning, Error, Fatal)
     .PARAMETER Message
         Primary log message
     .PARAMETER Detail
@@ -138,15 +134,12 @@ function Write-Log {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory=$true)]
-        [PSCustomObject]$Context,        
-        [Parameter(Mandatory=$false)]
+        [PSCustomObject]$Context,    
         [ValidateSet('Debug','Info','Warning','Error','Fatal')]
         [string]$Level = 'Info',  
         [Parameter(Mandatory=$true)]
         [string]$Message,
-        [Parameter(Mandatory=$false)]
         [string]$Detail = "",
-        [Parameter(Mandatory=$false)]
         [string]$Recommendation = ""
     )
     
@@ -180,16 +173,16 @@ function Write-Log {
             }
         }
 
-        # Add to Context Metrics
-        if (-not $Context.Metrics.ContainsKey($Context.StageName)) {
-            $Context.Metrics[$Context.StageName] = @{
-                "Warning"  = 0
-                "Error"    = 0
-            }
-        }
-        if ($Level -in @('Warning', 'Error')) {
-            $Context.Metrics[$Context.StageName][$Level] += 1
-        }
+        # # Add to Context Metrics
+        # if (-not $Context.Metrics.ContainsKey($Context.StageName)) {
+        #     $Context.Metrics[$Context.StageName] = @{
+        #         "Warning"  = 0
+        #         "Error"    = 0
+        #     }
+        # }
+        # if ($Level -in @('Warning', 'Error')) {
+        #     $Context.Metrics[$Context.StageName][$Level] += 1
+        # }
 
     }
     catch {
@@ -201,7 +194,7 @@ function Write-Log {
 #endregion Primitives
 
 #region Wrappers
-function Trace-Incident {
+function Register-Incident {
     <#
     .SYNOPSIS
         TODOC Brief function description
@@ -219,76 +212,125 @@ function Trace-Incident {
         [Parameter(Mandatory=$true)]
         [PSCustomObject]$Context,
         [ValidateSet('Debug','Info','Warning','Error','Fatal')]
-        [string]$Level = "Info",
+        [string]$Level = 'Info',
+        [Parameter(Mandatory=$true)]
+        [string]$Code,
         [string]$Message,
-        [string]$ErrorCode,
         [string]$Detail,
         [hashtable]$RecordContext = @{},
         [string]$Recommendation
     )
 
-    # Immediately throw for all fatal errors.
-    if ($Level -eq 'Fatal') {
-        $Context.HasCriticalErrors = $true
-        Write-Log -Context $Context -Level $Level -Message $Message
-        throw "Fatal error: $Message"
+    $Levels = $script:SeverityLevels
+    $Default = @{
+        Level   = $Level
+        Message = 'Unknown Incident'
+        Code    = 'CCW_000'
+        Recommendation = $null
     }
 
-    # Error handling
-    if ($ErrorCode) {
-        try {
-            # Create error object
-            # BUG Incident Level and Error Severity can conflict.
-            $ErrorObj = New-ErrorObj -Context $Context -ErrorCode $ErrorCode `
+    # Create Incident object
+    try {
+        # If an incident code is provided, use the lookup. Otherwise, use defaults.
+        if ($Code) {
+            $Definition = $Context.IncidentCodes[$Code]
+
+            # Manage Unknown Codes
+            if (-not $Definition) {
+                $UnknownMessage = "Unknown incident code provided"
+                $UnknownDetail = "Code provided: $Code"
+
+                Write-Log -Context $Context -Level $"Warning" -Message $UnknownMessage `
+                    -Detail $UnknownDetail
+                
+                $Definition = $Default
+            }
+        }
+        else {
+            # BUG Really should validate and handle if there's no Code AND no Message.
+            $Definition = $Default
+        }
+
+        # Set final fields for Incident object
+        $FinalCode =  if ($Code) { $Code } else { $Definition.Code }
+        $FinalMessage = if ($Message) { $Message } else { $Definition.Message }
+        $FinalDetail = if ($Detail) { $Detail } else { $null }
+        $FinalRecommendation = if ($Recommendation) { $Recommendation } else { $Definition.Recommendation }
+
+        $Incident = [PSCustomObject]@{
+            PSTypeName      = 'Incident'
+            Timestamp       = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+            ExecutionID     = $Context.ExecutionID
+            Stage           = $Context.StageName
+            Level           = $Definition.Level
+            Code            = $FinalCode
+            Message         = $FinalMessage
+            Detail          = $FinalDetail
+            Recommendation  = $FinalRecommendation
+            Context         = $RecordContext
+        }
+        
+        # Ignore items below Configured IncidentLevel
+        if ($Levels[$Incident.Level] -lt $Levels[$Context.Config.IncidentLevel]) {
+            return
+        }
+
+        # Handle Error/Fatal items as necessary
+        if ($Incident.Level -in @('Error', 'Fatal')) {
+            $ErrorObj = New-ErrorObj -Context $Context -ErrorCode $Code `
                 -Message $Message -Detail $Detail `
                 -Recommendation $Recommendation -RecordContext $RecordContext
-            
-            if ($ErrorObj.Severity -ne 'Error') {
-                $Level = $ErrorObj.Severity
-            }
-            
-            # Add to context error collection
-            if (-not $Context.Incidents.ContainsKey($Context.StageName)) {
-                $Context.Incidents[$Context.StageName] = @{
-                    'Warning'   = 0
-                    'Error'     = 0
-                }
-            }
-            if ($Level -in @('Warning', 'Error')) {
-                $Context.Metrics[$Context.StageName][$Level] += 1
-            }
+
             $Context.Errors += $errorObj
-
-            # Adjust termination flags
-            if ($Level -in @('Error', 'Fatal')) {
-                $Context.HasCriticalErrors = $true
-            }
-
-            # If there was no Message provided, use the error DefaultMessage
-            if (-not $Message) {
-                $Message = $ErrorObj.Message
-            }
-
-            # If there was no Recommendation provided, use the error DefaultRecommendation
-            if (-not $Recommendation) {
-                $Recommendation = $ErrorObj.Recommendation
+            $Context.HasErrors = $true
+            if ($Incident.Level -eq 'Fatal') {
+                $Context.HasFatalErrors = $true
             }
         }
-        catch {
-            # If error handling itself fails, write a warning and throw
-            Write-Warning "Failed to create error object: $_"
-            throw
+    }
+    catch {
+        # If object creation and error handling fails, write a warning and bail
+        Write-Warning "Failed to create incident object: $_"
+        $Context.HasErrors = $true
+        $Context.HasFatalError = $true
+        throw
+    }    
+
+    # Track the Incident object
+    try {
+        # Add to context collection
+        if (-not $Context.Incidents.ContainsKey($Context.StageName)) {
+            $Context.Incidents[$Context.StageName] = @{
+                'Info'      = @()
+                'Warning'   = @()
+                'Error'     = @()
+                'Fatal'     = @()
+            }
+        }
+        if (-not $Context.Metrics.ContainsKey($Context.StageName)) {
+            $Context.Metrics[$Context.StageName] = @{
+                'Info'      = 0
+                'Warning'   = 0
+                'Error'     = 0
+                'Fatal'     = 0
+            }
+        }
+
+        if ($Definition.Level -ne 'Debug') {
+            $Context.Incidents[$Context.StageName][$Definition.Level] += $Incident
+            $Context.Metrics[$Context.StageName][$Definition.Level] += 1
         }
     }
-    
-    #Perform necessary logging
-    if ($script:SeverityLevels[$Level] -ge $script:SeverityLevels[$Context.Config.LogLevel]) {
-        Write-Log -Context $Context -Level $Level -Message $Message -Detail $TechnicalDetail `
-            -Recommendation $Recommendation
+    catch {
+        Write-Warning "Failed to track incident: $_"
+        return
     }
-
-    # Return error object for tracking
-    return $ErrorObj
+        
+    # Perform required logging
+    if ($Levels[$Incident.Level] -ge $Levels[$Context.Config.LogLevel]) {
+        Write-Log -Context $Context -Level $Incident.Level -Message $Incident.Message `
+            -Detail $Incident.Detail -Recommendation $Incident.Recommendation
+    }
 }
 #endregion Wrappers
 

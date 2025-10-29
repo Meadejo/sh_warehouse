@@ -1,52 +1,62 @@
-# Pipeline Error Code Reference
+# Pipeline Incident Code Reference
 
 ## Overview
 
-The pipeline uses a standardized error object structure to track issues during execution. This document defines error severities, code structure, and catalogs all defined error codes.
+The pipeline uses a standardized incident object structure to track issues during execution. This document defines severities, code structure, and principles.
+All defined incident codes are found in IncidentCodes.json
 
 ## Incident Severity Levels
 
 | Severity | Value | Description | Pipeline Behavior | When to Use |
 |----------|-------|-------------|-------------------|-------------|
-| **Debug** | 0 | Debugging information | Execution continues, no intervention needed | Troubleshooting or testing pipeline behavior |
+| **Debug** | 0 | Debugging information | Execution continues, no intervention needed | Troubleshooting or testing behavior |
 | **Info** | 1 | Informational message | Execution continues, no intervention needed | Expected conditions, optional data missing |
 | **Warning** | 2 | Potential issue requiring attention | Execution continues, may need review | Data quality concerns, non-critical validation failures |
 | **Error** | 3 | Stage failure | Current stage fails, pipeline continues to next stage | Critical validation failures, required data missing |
-| **Fatal** | 4 | Pipeline failure | Entire pipeline stops immediately | Database connectivity lost, configuration invalid, critical system failure |
+| **Fatal** | 4 | Pipeline failure | Entire pipeline stops immediately | Configuration invalid, critical system failure |
 
-## Error Code Structure
+## Incident Code Structure
 
-Error codes follow the pattern: `STNNN`
+Incident codes follow the pattern: `LST_NNN`
 
+- **L** (Level): Level of Severity
+  - `D` = Debug
+  - `I` = Info
+  - `W` = Warning
+  - `E` = Error
+  - `F` = Fatal
+  
 - **S** (Stage): Single character identifying the source
   - `0` = Orchestration
-  - `1` = Stage 10 (Discovery)
-  - `2` = Stage 20 (Transformation)
-  - `3` = Stage 30 (Processing)
-  - `4` = Stage 40 (Post-Processing)
-  - `5` = Stage 50 (Warehousing)
-  - `6` = Stage 60 (Data Quality)
-  - `7` = Stage 70 (Outputs)
-  - `8` = Stage 80 (Automation)
-  - `9` = Stage 90 (Reporting)
-  - `A` = Core/Utility modules
+  - `1` = Discovery
+  - `2` = Transformation
+  - `3` = Data Processing
+  - `4` = Post-Processing
+  - `5` = Warehousing
+  - `6` = Data Quality
+  - `8` = Automation
+  - `9` = Reporting
+  - `U` = Utility
 
 - **T** (Type): Issue category
-  - `1` = Input/Source issues
-  - `2` = Processing/Logic issues
-  - `3` = Output/Export issues
-  - `4` = Validation issues
-  - `5` = Connection/Infrastructure issues
-  - `9` = Other/Miscellaneous
+  - `C` = Configuration issues
+  - `S` = Staging/Sequencing issues
+  - `F` = File I/O issues
+  - `I` = Infrastructure/Connection issues
+  - `P` = Processing/Logic issues
+  - `D` = Database/SQL issues
+  - `O` = Data Object issues (Validation, Typing, etc.)
+  - `M` = Miscellaneous/Other
+
 
 - **NNN** (Number): Sequential identifier (001-999)
 
 ### Examples
-- `A501` = Core utilities, Connection issue #1
-- `1101` = Stage 10, Input issue #1
-- `3401` = Stage 30, Validation issue #1
+- `F0S_001` = Fatal Orchestration Staging issue #1
+- `E1F_001` = Error in Discovery (Stage 10) File I/O; issue #1
+- `I3P_001` = Info re: Data Processing (Stage 30); item #1
 
-## Error Object Structure
+## Incident Object Structure
 
 ```powershell
 [PSCustomObject]@{
@@ -54,7 +64,7 @@ Error codes follow the pattern: `STNNN`
     ExecutionID     = "guid-here"
     Stage           = "10-Discovery"
     Severity        = "Warning"
-    ErrorCode       = "1101"
+    IncidentCode    = "1101"
     Message         = "Source file not found in expected location"
     TechnicalDetail = "FileNotFoundException: C:\Input\data.csv"
     RecordContext   = @{
@@ -65,13 +75,13 @@ Error codes follow the pattern: `STNNN`
 }
 ```
 
-## Defined Error Codes
+## Defined Incident Codes
 
-Refer to ErrorCodes.json for individual defined error codes
+Refer to IncidentCodes.json for individual defined incident codes
 
-## Adding New Error Codes
+## Adding New Incident Codes
 
-When implementing new error handling:
+When implementing new incident handling:
 
 1. **Choose appropriate severity** based on impact
 2. **Assign next sequential code** in the appropriate S-T category
@@ -104,4 +114,4 @@ if ($criticalErrors.Count -gt 0) {
 
 ---
 
-**Note**: Error codes should never be reused or changed once deployed to production.
+**Note**: Incident codes should never be reused or changed once deployed to production.

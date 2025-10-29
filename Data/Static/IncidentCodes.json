@@ -1,0 +1,23 @@
+{
+  "CCW-TEST": {
+    "Stage": "Core/Context",
+    "Category": "Configuration",
+    "Severity": "Warning",
+    "DefaultMessage": "Test of error management functions",
+    "DefaultRecommendation": "Hope it works"
+  },
+  "CCF-001": {
+    "Stage": "Core/Context",
+    "Category": "Configuration",
+    "Severity": "Fatal",
+    "DefaultMessage": "Unable to load orchestration context",
+    "DefaultRecommendation": "Hope that it progressed far enough to create log files."
+  },
+  "UCW-001": {
+    "Stage": "Utility: Incidents",
+    "Category": "Configuration",
+    "Severity": "Warning",
+    "DefaultMessage": "Unknown Incident Code",
+    "DefaultRecommendation": "See logs for more details."
+  }
+}
